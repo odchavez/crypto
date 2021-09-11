@@ -64,7 +64,7 @@ class Portfolio:
             self.total_portfolio_value = np.sum(self.daily_portfolio_values[-1,:])
             
     def get_sharpe_ratio(self):
-        vals = np.sum(self.daily_portfolio_values, axis=1)
+        vals = pd.Series(np.sum(self.daily_portfolio_values, axis=1)).pct_change()
         daily_mean = np.mean(vals)
         daily_std  = np.std(vals)
         SR = np.sqrt(365)*daily_mean/daily_std
@@ -72,8 +72,11 @@ class Portfolio:
     
     def get_sharpe_report(self):
         portfolio_SR = self.get_sharpe_ratio()
-        daily_mean = np.mean(self.daily_portfolio_values, axis=0)
-        daily_std  = np.std(self.daily_portfolio_values, axis=0)
+        #print(pd.DataFrame(self.daily_portfolio_values))
+        pcpf_df = pd.DataFrame(self.daily_portfolio_values).pct_change()
+        #print(pcpf_df)
+        daily_mean = np.nanmean(pcpf_df, axis=0)
+        daily_std  = np.nanstd(pcpf_df, axis=0)
         individual_SR = np.sqrt(365)*daily_mean/daily_std
         df = pd.DataFrame(columns=list(self.symbols))
         df.loc[0] = individual_SR
