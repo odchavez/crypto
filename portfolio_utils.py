@@ -30,6 +30,7 @@ class Portfolio:
         )
         self.event_datetimes = np.insert(valid_rebalance_datetime, 0, self.start_date)
         self.event_datetimes = np.append(self.event_datetimes, self.endp1_date)
+        #print(self.event_datetimes)
         
     def period_return(self, returns_df, weights=None):
         n_dates = returns_df.shape[0]
