@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 
 import datetime
 
+import constants as c
+
 def date_cleaner(date_series, format = "%Y-%m-%d"):
     empty_list = [None]*len(date_series)
     for i in range(len(empty_list)):
@@ -84,3 +86,22 @@ class Portfolio:
         df['Portfolio SR'] = self.get_sharpe_ratio()
         return df
     
+    
+def get_data(symbols, stems):
+    all_data = None
+    for sym in symbols:
+        for s in stems:
+            path = "data/klines_data/" + sym + "/" +sym+ s
+            #print(path)
+            data = pd.read_csv(path, header=None)
+            data.columns = c.klines_cnames
+            data['symbol'] = sym
+            if all_data is None:
+                all_data = data
+            else:
+                all_data = pd.concat([all_data, data])
+    
+    pd.to_datetime(all_data['Close time'], unit='ms')
+    all_data["Open_time_"]=pd.to_datetime(all_data['Open time'], unit='ms')
+    all_data["Close_time_"] = pd.to_datetime(all_data['Close time'], unit='ms')
+    return all_data
